@@ -29,6 +29,12 @@ var resolve_links = function(doc, tag, attr){
   });
 }
 
+var remove_scripts = function(doc){
+  doc.querySelectorAll("script").forEach(el => {
+    el.remove();
+  });
+};
+
 // It seems that the document charset isn't detected correctly by JSDOM sometimes
 var get_charset = function(doc){
   // use the default document encoding
@@ -72,8 +78,8 @@ var get_doc = function(src){
 };
 
 // var uri = "https://therealmovement.wordpress.com/2018/01/07/notes-for-a-talk-on-communism-and-free-time/"
-// var uri = "https://zpravy.idnes.cz/youtube-alexej-navalny-google-video-volby-rusko-fuw-/zahranicni.aspx?c=A180909_082252_zahranicni_hell"
-var uri = "https://www.root.cz/clanky/muzeme-verit-prekladacum-projekty-resici-schema-duverive-duvery/"
+var uri = "https://zpravy.idnes.cz/youtube-alexej-navalny-google-video-volby-rusko-fuw-/zahranicni.aspx?c=A180909_082252_zahranicni_hell"
+// var uri = "https://www.root.cz/clanky/muzeme-verit-prekladacum-projekty-resici-schema-duverive-duvery/"
 request(uri, {encoding:null}, (err, res, src) =>{
   // var src = '';
   // res.on('data', function(d){ src += d; });
@@ -86,6 +92,7 @@ request(uri, {encoding:null}, (err, res, src) =>{
   // convert relative urls to absolute ones
   resolve_links(doc, "a", "href");
   resolve_links(doc, "img", "src");
+  remove_scripts(doc)
   // console.log(dom.serialize());
   var article = new r.Readability(uri, doc).parse();
   console.log(article.title);
