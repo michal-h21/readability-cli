@@ -1,6 +1,7 @@
 'use strict';
 const request = require('request');
 const r = require('readability-node');
+const Readability = require("readability");
 const jsdom = require('jsdom');
 const tidy = require('htmltidy2').tidy;
 const { JSDOM } = jsdom;
@@ -54,9 +55,9 @@ var get_charset = function(doc){
   return enc;
 };
 
-var get_doc = function(src){
-  var make_doc = function(src){
-    var dom = new JSDOM(src, {
+var get_doc = function(src, uri){
+  var make_doc = function(src, uri){
+    var dom = new JSDOM(src,{
       url: uri,
       features: {
         FetchExternalResources: false,
@@ -64,7 +65,7 @@ var get_doc = function(src){
       }})
     return dom.window.document;
   };
-  var doc = make_doc(src);
+  var doc = make_doc(src, uri);
   var charset = get_charset(doc);
   if(charset !=="UTF-8") {
     // for different charsets than utf-8, we must convert it to that
@@ -73,7 +74,7 @@ var get_doc = function(src){
     var buffer = Buffer.from(src);
     var iconv = new Iconv(charset, "UTF-8");
     var newsrc  = iconv.convert(buffer).toString();
-    return make_doc(newsrc);
+    return make_doc(newsrc, uri);
   }
 };
 
@@ -88,15 +89,18 @@ request(uri, {encoding:null}, (err, res, src) =>{
   // tidy(src, tidyopts, function(err, tidysrc){
   //
   // }
-  var doc = get_doc(src);
+  var doc = get_doc(src, uri);
   // convert relative urls to absolute ones
   resolve_links(doc, "a", "href");
   resolve_links(doc, "img", "src");
   remove_scripts(doc)
   // console.log(dom.serialize());
-  var article = new r.Readability(uri, doc).parse();
+  // var article = new r.Readability(uri, doc).parse();
+  var article = new Readability(doc).parse();
   console.log(article.title);
-  console.log
+  console.log(article.byline);
+  console.log(article.excerpt);
+
   // console.log(tidysrc)
   // console.log(article.content);
   tidy(article.content, tidyopts, function(err, html) {

@@ -8,7 +8,7 @@
     "htmltidy2": "^0.3.0",
     "iconv": "^2.3.0",
     "jsdom": "^12.0.0",
-    "readability-node": "^0.1.0",
+    "readability": "git+ssh://git@github.com/mozilla/readability.git",
     "request": "^2.88.0"
   },
   "devDependencies": {},
@@ -21,5 +21,6 @@
     "xml"
   ],
   "author": "Michal Hoftich",
-  "license": "ISC"
+  "license": "ISC",
+  "repository":"https://github.com/michal-h21/readability-cli"
 }
