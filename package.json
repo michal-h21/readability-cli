@@ -1,0 +1,25 @@
+{
+  "name": "readability-cli",
+  "version": "1.0.0",
+  "description": "CLI interface for the Mozilla Readability library",
+  "main": "read.js",
+  "dependencies": {
+    "commander": "^2.18.0",
+    "htmltidy2": "^0.3.0",
+    "iconv": "^2.3.0",
+    "jsdom": "^12.0.0",
+    "readability-node": "^0.1.0",
+    "request": "^2.88.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "readability",
+    "html",
+    "xml"
+  ],
+  "author": "Michal Hoftich",
+  "license": "ISC"
+}
