@@ -1,9 +1,11 @@
+'use strict';
 const request = require('request');
 const r = require('readability-node');
 const jsdom = require('jsdom');
 const tidy = require('htmltidy2').tidy;
 const { JSDOM } = jsdom;
 const Iconv  = require('iconv').Iconv;
+const url = require("url");
 
 var tidyopts =  {
   doctype: 'html5',
@@ -12,6 +14,19 @@ var tidyopts =  {
   outputXml: true,
   // TidyEscapeScripts: true,
   escapeScripts: true,
+}
+
+
+var urljoin = function(base, href){
+  var newurl = new url.URL(href, base);
+  return newurl.toString();
+};
+
+var resolve_links = function(doc, tag, attr){
+  var metas = doc.querySelectorAll(tag);
+  metas.forEach(el => {
+    el.setAttribute(attr, urljoin(uri, el.getAttribute(attr)) );
+  });
 }
 
 // It seems that the document charset isn't detected correctly by JSDOM sometimes
@@ -68,18 +83,18 @@ request(uri, {encoding:null}, (err, res, src) =>{
   //
   // }
   var doc = get_doc(src);
-  var metas = doc.querySelectorAll("meta");
+  // convert relative urls to absolute ones
+  resolve_links(doc, "a", "href");
+  resolve_links(doc, "img", "src");
   // console.log(dom.serialize());
   var article = new r.Readability(uri, doc).parse();
-  // console.log(article.title, "\n\n", article.content);
+  console.log(article.title);
+  console.log
   // console.log(tidysrc)
   // console.log(article.content);
   tidy(article.content, tidyopts, function(err, html) {
     console.log(html);
     // console.log(charset);
-    metas.forEach(function(meta){
-      // console.log(meta.getAttribute("charset"), meta["http-equiv"], meta.content);
-    });
 
     // 
   });
