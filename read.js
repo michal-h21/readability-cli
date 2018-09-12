@@ -1,6 +1,5 @@
 'use strict';
 const request = require('request');
-const r = require('readability-node');
 const Readability = require("readability");
 const jsdom = require('jsdom');
 const tidy = require('htmltidy2').tidy;
