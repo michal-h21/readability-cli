@@ -16,6 +16,36 @@ var tidyopts =  {
   escapeScripts: true,
 }
 
+var get_html = function(article){
+  var title = article.title;
+  var byline = article.byline;
+  var content = article.content;
+  var summary = article.excerpt;
+  var uri = article.uri;
+
+  return  `<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8" />
+  <title>${title}</title>
+  </head>
+  <body>
+  <article itemscope itemtype="http://schema.org/Article">
+  <h1 itemprop="headline">${title}</h1>
+  <div><a href="${uri}" itemprop="identifier">Original article</a></div>
+  <address class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">Authors: <span itemprop="name">${byline}</span></address>
+  <section itemprop="backstory">
+    ${summary}
+  </section>
+  <article itemprop="articleBody">
+  ${content}
+  </article>
+  </article>
+  </body>
+  </head>
+`;
+}
+
 
 var urljoin = function(base, href){
   var newurl = new url.URL(href, base);
@@ -96,13 +126,14 @@ request(uri, {encoding:null}, (err, res, src) =>{
   // console.log(dom.serialize());
   // var article = new r.Readability(uri, doc).parse();
   var article = new Readability(doc).parse();
-  console.log(article.title);
-  console.log(article.byline);
-  console.log(article.excerpt);
+  article.uri = uri
+  // console.log(article.title);
+  // console.log(article.byline);
+  // console.log(article.excerpt);
 
   // console.log(tidysrc)
   // console.log(article.content);
-  tidy(article.content, tidyopts, function(err, html) {
+  tidy(get_html(article), tidyopts, function(err, html) {
     console.log(html);
     // console.log(charset);
 
