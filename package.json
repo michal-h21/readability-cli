@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "CLI interface for the Mozilla Readability library",
   "main": "read.js",
+  "bin": {"readability": "./cli.js"},
   "dependencies": {
     "commander": "^2.18.0",
     "htmltidy2": "^0.3.0",
